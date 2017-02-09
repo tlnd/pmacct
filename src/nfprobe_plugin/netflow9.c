@@ -145,6 +145,8 @@ struct NF9_DATA_FLOWSET_HEADER {
 #define NF9_FIRST_SWITCHED_MSEC         152
 #define NF9_LAST_SWITCHED_MSEC          153
 /* ... */
+#define NF9_MOBILE_IMSI                 455
+/* ... */
 
 /* CUSTOM TYPES START HERE: supported in IPFIX only with pmacct PEN */
 #define NF9_CUST_TAG			1
@@ -443,6 +445,14 @@ flow_to_flowset_vlan_handler(char *flowset, const struct FLOW *flow, int idx, in
 }
 
 static int
+flow_to_flowset_imsi_handler(char *flowset, const struct FLOW *flow, int idx, int size)
+{
+  memcpy(flowset, &flow->imsi, size);
+
+  return 0;
+}
+
+static int
 flow_to_flowset_mpls_handler(char *flowset, const struct FLOW *flow, int idx, int size)
 {
   memcpy(flowset, &flow->mpls_label[idx], size);
@@ -710,6 +720,7 @@ nf9_init_template(void)
 	  config.nfprobe_what_to_count |= COUNT_DST_PORT;
 	  config.nfprobe_what_to_count |= COUNT_IP_PROTO;
 	  config.nfprobe_what_to_count |= COUNT_IP_TOS;
+	  Log(LOG_DEBUG, "DEBUG ( %s/%s ): Using default aggregates for NetFlow.\n", config.name, config.type);
 	}
 	
 	rcount = 0; rcount_pen = 0;
@@ -1045,6 +1056,19 @@ nf9_init_template(void)
           v4_pen_int_template_out.r[rcount_pen].length = IPFIX_VARIABLE_LENGTH;
           rcount_pen++;
         }
+	if (config.nfprobe_version == 10 && config.nfprobe_what_to_count_2 & COUNT_IMSI) {
+	  int rlen = sizeof(imsi_t);
+
+	  v4_template.r[rcount].type = htons(NF9_MOBILE_IMSI);
+	  v4_template.r[rcount].length = htons(rlen);
+          v4_int_template.r[rcount].handler = flow_to_flowset_imsi_handler;
+	  v4_int_template.r[rcount].length = rlen;
+	  v4_template_out.r[rcount].type = htons(NF9_MOBILE_IMSI);
+	  v4_template_out.r[rcount].length = htons(rlen);
+          v4_int_template_out.r[rcount].handler = flow_to_flowset_imsi_handler;
+	  v4_int_template_out.r[rcount].length = rlen;
+	  rcount++;
+	}
         if (config.sampling_rate || config.ext_sampling_rate) {
           v4_template.r[rcount].type = htons(NF9_FLOW_SAMPLER_ID);
           v4_template.r[rcount].length = htons(1);
@@ -1438,6 +1462,19 @@ nf9_init_template(void)
           v6_pen_int_template_out.r[rcount_pen].length = IPFIX_VARIABLE_LENGTH;
           rcount_pen++;
         }
+	if (config.nfprobe_version == 10 && config.nfprobe_what_to_count_2 & COUNT_IMSI) {
+	  int rlen = sizeof(imsi_t);
+
+	  v6_template.r[rcount].type = htons(NF9_MOBILE_IMSI);
+	  v6_template.r[rcount].length = htons(rlen);
+          v6_int_template.r[rcount].handler = flow_to_flowset_imsi_handler;
+	  v6_int_template.r[rcount].length = rlen;
+	  v6_template_out.r[rcount].type = htons(NF9_MOBILE_IMSI);
+	  v6_template_out.r[rcount].length = htons(rlen);
+          v6_int_template_out.r[rcount].handler = flow_to_flowset_imsi_handler;
+	  v6_int_template_out.r[rcount].length = rlen;
+	  rcount++;
+	 }
         if (config.sampling_rate || config.ext_sampling_rate) {
           v6_template.r[rcount].type = htons(NF9_FLOW_SAMPLER_ID);
           v6_template.r[rcount].length = htons(1);

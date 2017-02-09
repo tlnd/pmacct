@@ -178,6 +178,9 @@ struct FLOW {
 	u_int32_t mpls_label[2];		/* MPLS top label */
         u_int16_t ifindex[2];			/* input/output ifindex */
 
+	/* Mobile stuff */
+	imsi_t imsi;
+
 	/* classification stuff */
 	pm_class_t class;			/* Classification internal ID */
 	pm_id_t tag[2];				/* Tag */

@@ -395,6 +395,16 @@ ASN_to_flowrec(struct FLOW *flow, struct pkt_data *data, int ndx)
 }
 
 static int
+IMSI_to_flowrec(struct FLOW *flow, struct pkt_data *data)
+{
+  struct pkt_primitives *p = &data->primitives;
+
+  flow->imsi = p->imsi;
+
+  return (0);
+}
+
+static int
 cust_to_flowrec(struct FLOW *flow, char *pcust, int ndx)
 {
   if (pcust) {
@@ -462,6 +472,7 @@ ipv4_to_flowrec(struct FLOW *flow, struct primitives_ptrs *prim_ptrs, int *isfra
 
   l2_to_flowrec(flow, data, extras, ndx);
   ASN_to_flowrec(flow, data, ndx);
+  IMSI_to_flowrec(flow, data);
   cust_to_flowrec(flow, pcust, ndx);
   vlen_to_flowrec(flow, pvlen, ndx);
 
@@ -1495,6 +1506,9 @@ sort_version:
     if (target.fd != -1)
       Log(LOG_INFO, "INFO ( %s/%s ): Exporting flows to [%s]:%s\n",
 		    config.name, config.type, dest_addr, dest_serv);
+
+    Log(LOG_INFO, "INFO ( %s/%s ): nfprobe_version: %u\n",
+		    config.name, config.type, config.nfprobe_version);
   }
 
   /* Main processing loop */

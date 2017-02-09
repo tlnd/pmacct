@@ -560,6 +560,8 @@ struct data_hdr_v9 {
 /* ... */
 #define NF9_LAYER2OCTETDELTACOUNT	352
 /* ... */
+#define NF9_MOBILE_IMSI                 455
+/* ... */
 #define NF9_ASA_XLATE_IPV4_SRC_ADDR	40001
 #define NF9_ASA_XLATE_IPV4_DST_ADDR	40002
 #define NF9_ASA_XLATE_L4_SRC_PORT	40003
