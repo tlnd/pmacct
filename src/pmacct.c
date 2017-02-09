@@ -228,6 +228,9 @@ void write_stats_header_formatted(pm_cfgreg_t what_to_count, pm_cfgreg_t what_to
     printf("MPLS_LABEL_TOP  ");
     printf("MPLS_LABEL_BOTTOM  ");
     printf("MPLS_STACK_DEPTH  ");
+    printf("MPLS_STACK_DEPTH  ");
+
+    printf("IMSI            ");
 
     printf("TIMESTAMP_START                ");
     printf("TIMESTAMP_END                  ");
@@ -365,6 +368,8 @@ void write_stats_header_formatted(pm_cfgreg_t what_to_count, pm_cfgreg_t what_to
     if (what_to_count_2 & COUNT_MPLS_LABEL_BOTTOM) printf("MPLS_LABEL_BOTTOM  ");
     if (what_to_count_2 & COUNT_MPLS_STACK_DEPTH) printf("MPLS_STACK_DEPTH  ");
 
+    if (what_to_count_2 & COUNT_IMSI) printf("IMSI            ");
+
     if (what_to_count_2 & COUNT_TIMESTAMP_START) printf("TIMESTAMP_START                ");
     if (what_to_count_2 & COUNT_TIMESTAMP_END) printf("TIMESTAMP_END                  "); 
     if (what_to_count_2 & COUNT_TIMESTAMP_ARRIVAL) printf("TIMESTAMP_ARRIVAL              "); 
@@ -478,6 +483,7 @@ void write_stats_header_csv(pm_cfgreg_t what_to_count, pm_cfgreg_t what_to_count
     printf("%sMPLS_LABEL_TOP", write_sep(sep, &count));
     printf("%sMPLS_LABEL_BOTTOM", write_sep(sep, &count));
     printf("%sMPLS_STACK_DEPTH", write_sep(sep, &count));
+    printf("%sIMSI", write_sep(sep, &count));
     printf("%sTIMESTAMP_START", write_sep(sep, &count));
     printf("%sTIMESTAMP_END", write_sep(sep, &count));
     printf("%sTIMESTAMP_ARRIVAL", write_sep(sep, &count));
@@ -594,6 +600,8 @@ void write_stats_header_csv(pm_cfgreg_t what_to_count, pm_cfgreg_t what_to_count
     if (what_to_count_2 & COUNT_MPLS_LABEL_TOP) printf("%sMPLS_LABEL_TOP", write_sep(sep, &count));
     if (what_to_count_2 & COUNT_MPLS_LABEL_BOTTOM) printf("%sMPLS_LABEL_BOTTOM", write_sep(sep, &count));
     if (what_to_count_2 & COUNT_MPLS_STACK_DEPTH) printf("%sMPLS_STACK_DEPTH", write_sep(sep, &count));
+
+    if (what_to_count_2 & COUNT_IMSI) printf("%sIMSI", write_sep(sep, &count));
 
     if (what_to_count_2 & COUNT_TIMESTAMP_START) printf("%sTIMESTAMP_START", write_sep(sep, &count));
     if (what_to_count_2 & COUNT_TIMESTAMP_END) printf("%sTIMESTAMP_END", write_sep(sep, &count));
@@ -1046,6 +1054,10 @@ int main(int argc,char **argv)
         else if (!strcmp(count_token[count_index], "mpls_stack_depth")) {
           count_token_int[count_index] = COUNT_INT_MPLS_STACK_DEPTH;
           what_to_count_2 |= COUNT_MPLS_STACK_DEPTH;
+        }
+        else if (!strcmp(count_token[count_index], "imsi")) {
+          count_token_int[count_index] = COUNT_INT_IMSI;
+          what_to_count_2 |= COUNT_IMSI;
         }
         else if (!strcmp(count_token[count_index], "timestamp_start")) {
           count_token_int[count_index] = COUNT_INT_TIMESTAMP_START;
@@ -2695,6 +2707,11 @@ int main(int argc,char **argv)
         if (!have_wtc || (what_to_count_2 & COUNT_MPLS_STACK_DEPTH)) {
           if (want_output & PRINT_OUTPUT_FORMATTED) printf("%-2u                ", pmpls->mpls_stack_depth);
           else if (want_output & PRINT_OUTPUT_CSV) printf("%s%u", write_sep(sep_ptr, &count), pmpls->mpls_stack_depth);
+        }
+
+        if (!have_wtc || (what_to_count_2 & COUNT_IMSI)) {
+          if (want_output & PRINT_OUTPUT_FORMATTED) printf("%-15s ", acc_elem->primitives.imsi.str);
+          else if (want_output & PRINT_OUTPUT_CSV) printf("%s%s", write_sep(sep_ptr, &count), acc_elem->primitives.imsi.str);
         }
 
         if (!have_wtc || (what_to_count_2 & COUNT_TIMESTAMP_START)) {
