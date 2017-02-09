@@ -196,6 +196,8 @@ EXT void src_host_pocode_geoipv2_handler(struct channels_list_entry *, struct pa
 EXT void dst_host_pocode_geoipv2_handler(struct channels_list_entry *, struct packet_ptrs *, char **);
 #endif
 
+EXT void imsi_handler(struct channels_list_entry *, struct packet_ptrs *, char **);
+
 EXT int evaluate_lm_method(struct packet_ptrs *, u_int8_t, u_int32_t, u_int32_t);
 EXT char *lookup_tpl_ext_db(void *, u_int32_t, u_int16_t);
 #undef EXT

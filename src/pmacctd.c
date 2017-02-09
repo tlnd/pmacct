@@ -493,6 +493,10 @@ int main(int argc,char **argv, char **envp)
 
         if (list->cfg.what_to_count_2 & (COUNT_LABEL))
           list->cfg.data_type |= PIPE_TYPE_VLEN;
+
+	/* TODO: configure option to activate libdmconfig */
+	list->cfg.what_to_count_2 |= COUNT_IMSI;
+
       }
       else if (list->type.id == PLUGIN_ID_SFPROBE) {
         /* If we already renormalizing an external sampling rate,

@@ -669,6 +669,11 @@ void evaluate_packet_handlers()
       primitives++;
     }
 
+    if (channels_list[index].aggregation_2 & COUNT_IMSI) {
+      channels_list[index].phandler[primitives] = imsi_handler;
+      primitives++;
+    }
+
     if (channels_list[index].aggregation_2 & COUNT_EXPORT_PROTO_SEQNO) {
       if (config.acct_type == ACCT_NF) channels_list[index].phandler[primitives] = NF_sequence_number_handler;
       else if (config.acct_type == ACCT_SF) channels_list[index].phandler[primitives] = SF_sequence_number_handler;
@@ -5189,6 +5194,14 @@ void SF_bgp_peer_src_as_fromext_handler(struct channels_list_entry *chptr, struc
   pbgp->peer_src_as = 0;
 
   // XXX: fill this in
+}
+
+void imsi_handler(struct channels_list_entry *chptr, struct packet_ptrs *pptrs, char **data)
+{
+  struct pkt_data *pdata = (struct pkt_data *) *data;
+
+  // TODO: get real IMSI
+  memcpy(&pdata->primitives.imsi.str, "230005550001234", sizeof(pdata->primitives.imsi.str));
 }
 
 #if defined WITH_GEOIP
